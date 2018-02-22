@@ -64,3 +64,6 @@ services:
       - ./bot/.env.dist:/usr/src/app/.env
     networks:
       - johnny-demo
+
+  util-cleaner:
+    image: kfei/slack-cleaner
