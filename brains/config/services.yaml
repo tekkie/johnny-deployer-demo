@@ -22,22 +22,25 @@ services:
 
     App\Rest\Jenkins:
         arguments:
-            $endpoint: %env(JENKINS_ENDPOINT)%
-            $username: %env(JENKINS_USERNAME)%
-            $password: %env(JENKINS_PASSWORD)%
+            $endpoint: '%env(JENKINS_ENDPOINT)%'
+            $username: '%env(JENKINS_USERNAME)%'
+            $password: '%env(JENKINS_PASSWORD)%'
 
     App\Rest\Jira:
         arguments:
-            $endpoint: %env(JIRA_ENDPOINT)%
-            $username: %env(JIRA_USERNAME)%
-            $password: %env(JIRA_PASSWORD)%
+            $endpoint: '%env(JIRA_ENDPOINT)%'
+            $username: '%env(JIRA_USERNAME)%'
+            $password: '%env(JIRA_PASSWORD)%'
+            $logger:   '@logger'
+        tags:
+            - { name: monolog.logger, channel: rest_jira }
 
     App\Rest\Watson:
         class: App\Rest\Watson
         arguments:
-            $endpoint: %conversation_endpoint%
-            $username: %env(CONVERSATION_USERNAME)%
-            $password: %env(CONVERSATION_PASSWORD)%
+            $endpoint: '%conversation_endpoint%'
+            $username: '%env(CONVERSATION_USERNAME)%'
+            $password: '%env(CONVERSATION_PASSWORD)%'
 #            $logger:   '@logger'
 
     App\Controller\:
@@ -60,22 +63,6 @@ services:
             $logger:       '@logger'
         tags:
             - { name: monolog.logger, channel: executor }
-
-    client.jira:
-        class: App\Rest\Jira
-        arguments:
-            $endpoint: %env(JIRA_ENDPOINT)%
-            $username: %env(JIRA_USERNAME)%
-            $password: %env(JIRA_PASSWORD)%
-            $logger:   '@logger'
-        tags:
-            - { name: monolog.logger, channel: rest_jira }
-
-    repository.jira:
-        class: App\Repository\Jira
-        arguments:
-            $serializer: '@jms_serializer'
-            $restClient: '@client.jira'
 
     executor.task_tracking:
         class: App\Service\TaskTracking

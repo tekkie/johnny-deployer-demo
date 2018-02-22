@@ -159,6 +159,7 @@ class Execute
                     );
 
                     foreach ($allJobs->getBuilds() as $build) {
+                        // parse each individual build
                         foreach ($build->getActions() as $action) {
                             if ('hudson.model.ParametersAction' !== $action->getClass()) {
                                 continue;
@@ -172,13 +173,17 @@ class Execute
                                 ' It was on %s and was marked as %s. <%sconsole|See the details>',
                                 date('Y-m-d H:i:s', $build->getTimestamp()),
                                 $build->getResult(),
-                                $build->getUrl()
+                                str_replace(
+                                    getenv('JENKINS_ENDPOINT'),
+                                    getenv('JENKINS_ENDPOINT_PUBLIC'),
+                                    $build->getUrl()
+                                )
                             );
                         }
                     }
 
                     return sprintf(
-                        'Apologies, I could not find any deployment of %s in %s',
+                        ' Apologies, I could not find any deployment of %s in %s',
                         $component,
                         $environment
                     );

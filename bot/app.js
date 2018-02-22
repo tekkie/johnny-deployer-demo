@@ -3,12 +3,7 @@ require( 'dotenv' ).config( {silent: true} );
 const express = require('express');
 const Botmaster = require('botmaster');
 const SessionWare = require('botmaster-session-ware');
-const cfenv = require('cfenv');
 const requestLib = require('request-promise');
-
-var appEnv = cfenv.getAppEnv();
-
-console.log('running on: ' + appEnv.port);
 
 console.log(process.env);
 
@@ -16,10 +11,13 @@ const app = express();
 app.get('/', (req, res) => {
     res.send('Hello world\n');
 });
+app.use('/slack-button', express.static(__dirname + '/views'));
 
 const port = process.env.RUNTIME_PORT || 8080;
 const myServer = app.listen(port,'0.0.0.0');
 const botmaster = new Botmaster({ server: myServer});
+
+console.log('running on: ' + port);
 
 //Slack setup
 const SlackBot = require('botmaster-slack');

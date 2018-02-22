@@ -11,10 +11,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConversationalController extends Controller
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     public function index(Request $request, LoggerInterface $logger, \App\Service\Ask $ask)
     {
         $responseText = '';
+        $this->logger = $logger;
 
         // decode what we got from JohnnyTheBot
         $apiRequest = $this->get('jms_serializer')->deserialize(
@@ -28,13 +33,13 @@ class ConversationalController extends Controller
         }
 
         $apiResponse = $ask->ask($apiRequest->message);
-        $logger->debug(sprintf('Watson says: %s', $this->get('jms_serializer')->serialize($apiResponse, 'json')));
+        $this->logger->debug(sprintf('Watson says: %s', $this->get('jms_serializer')->serialize($apiResponse, 'json')));
 
         // append what Watson said to what we'll give back to botmaster
         $responseText .= implode('', $apiResponse->getOutput()->text);
 
         if (0 == count($apiResponse->getIntents())) {
-            $this->get('logger')->debug(sprintf(
+            $this->logger->debug(sprintf(
                 'No intent for me this time. Watson said `%s`',
                 $responseText
             ));
@@ -119,7 +124,7 @@ class ConversationalController extends Controller
         if (is_null($component) || is_null($environment)) {
             return 'I did not get the complete information, need component and environment to proceed';
         }
-        $this->get('logger')->debug(sprintf('Component: %s, Environment: %s %s', $component, $environment, $action));
+        $this->logger->debug(sprintf('Component: %s, Environment: %s %s', $component, $environment, $action));
 
         /** @var \App\Service\Execute $execute */
         $execute = $this->get('executor.job');
