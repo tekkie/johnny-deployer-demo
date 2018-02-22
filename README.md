@@ -14,6 +14,11 @@ and that you are familiar with [`docker-compose`](https://docs.docker.com/compos
 Additionally, you will need an Atlassian account for the Jira trial license. 
 If you don't have one yet, you can [sign up here](https://id.atlassian.com/signup).
 
+In order to expose your local development environment to Slack you will need the awesome ngrok.
+Here's a handy [download link](https://ngrok.com/download).
+
+A little bit of patience :-) as the initial setup gives you enough time for a large coffee.
+
 ## Setup
 
 Start the containers by running:
@@ -22,7 +27,8 @@ $ ./bootstrap.sh
 ```
 
 The process is going to take a while, as it has to build quite a few containers.
-The most long setup comes from the Jira one, so please be patient until everything is grabbed accordingly.
+The longest setup comes from the Jira one, so please be patient until everything 
+is downloaded.
 
 ## The components
 
@@ -36,7 +42,9 @@ with user `admin` and password `adminpass`.
 Accessible at [http://localhost:4646](http://localhost:4646).
 
 Once they have been built and started, we need to perform the Jira evaluation license setup.
-TODO insert video
+Here is a [handy video tutorial](https://www.youtube.com/watch?v=v5tqDlQcVss) on how that can be achieved, 
+and it also shows how to modify the default workflow for the purpose of this demo.
+Please note that this uses the Atlassian account that we marked necessary in the prerequisites section above.
 
 ### Johnny: The Bot
 
