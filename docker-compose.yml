@@ -67,3 +67,5 @@ services:
 
   util-cleaner:
     image: kfei/slack-cleaner
+    networks:
+      - johnny-demo
