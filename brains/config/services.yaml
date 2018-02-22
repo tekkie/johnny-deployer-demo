@@ -64,11 +64,6 @@ services:
         tags:
             - { name: monolog.logger, channel: executor }
 
-    executor.task_tracking:
-        class: App\Service\TaskTracking
-        arguments:
-            $repository: '@repository.jira'
-
     app.exception_listener:
         class: App\Listener\Exception
         arguments:

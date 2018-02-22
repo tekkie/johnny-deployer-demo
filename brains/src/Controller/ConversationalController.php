@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Jenkins\Build\Parameter;
 use App\Entity\Watson\Intent;
+use App\Service\Ask;
+use App\Service\TaskTracking;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +18,12 @@ class ConversationalController extends Controller
      */
     private $logger;
 
-    public function index(Request $request, LoggerInterface $logger, \App\Service\Ask $ask)
+    /**
+     * @var TaskTracking
+     */
+    private $taskTracking;
+
+    public function index(Request $request, LoggerInterface $logger)
     {
         $responseText = '';
         $this->logger = $logger;
@@ -32,7 +39,8 @@ class ConversationalController extends Controller
             return new Response('');
         }
 
-        $apiResponse = $ask->ask($apiRequest->message);
+        /** @var \App\Entity\Watson\Response $apiResponse */
+        $apiResponse = $this->get(Ask::class)->ask($apiRequest->message);
         $this->logger->debug(sprintf('Watson says: %s', $this->get('jms_serializer')->serialize($apiResponse, 'json')));
 
         // append what Watson said to what we'll give back to botmaster
@@ -55,6 +63,14 @@ class ConversationalController extends Controller
                     );
                     break;
                 case '2_Prepare_RC_and_Deploy':
+                    if (is_null($apiResponse->getEnvironment()) || is_null($apiResponse->getComponent())) {
+                        $responseText .= sprintf(
+                            'I think you want to build and deploy, but I am unsure what. Environment = `%s`. Component = `%s`.',
+                            $apiResponse->getEnvironment(),
+                            $apiResponse->getComponent()
+                        );
+                        break;
+                    }
                     $this->buildAndDeploy(
                         $apiResponse->getEnvironment(),
                         $apiResponse->getComponent()
@@ -78,7 +94,7 @@ class ConversationalController extends Controller
     private function readyForEnvironment(string $environment): string
     {
         /** @var \App\Service\TaskTracking $taskTracking */
-        $taskTracking = $this->get('executor.task_tracking');
+        $taskTracking = $this->get(TaskTracking::class);
 
         $issues = $taskTracking->readyForEnvironment($environment);
 
