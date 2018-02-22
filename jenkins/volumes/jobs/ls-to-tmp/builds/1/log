@@ -1,0 +1,8 @@
+Started by user [8mha:////4BUhY1qoPp6YNNKfl7vVS0xT/AwZPkO63KcdA2iPQb67AAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Building in workspace /var/jenkins_home/workspace/ls-to-tmp
+[ls-to-tmp] $ /bin/sh -xe /tmp/jenkins6666222661883565969.sh
++ ls /var
++ cat /tmp/ks.txt
+cat: /tmp/ks.txt: No such file or directory
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

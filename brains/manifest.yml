@@ -1,0 +1,5 @@
+applications:
+- name: JohnnyTheBrains
+  random-route: true
+  memory: 128M
+  buildpack: https://github.com/cloudfoundry/php-buildpack

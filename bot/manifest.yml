@@ -1,0 +1,4 @@
+applications:
+- name: JohnnyTheBot
+  random-route: true
+  memory: 128M

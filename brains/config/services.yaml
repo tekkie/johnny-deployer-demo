@@ -1,0 +1,91 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+    conversation_endpoint: %env(CONVERSATION_ENDPOINT)%/workspaces/%env(WORKSPACE_ID)%/message?version=2017-05-26
+    jenkins_endpoint: %env(JENKINS_ENDPOINT)%/view/Johnny/job
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    App\Service\:
+        resource: '../src/Service'
+
+    App\Repository\:
+        resource: '../src/Repository'
+
+    App\Rest\:
+        resource: '../src/Rest'
+
+    App\Rest\Jenkins:
+        arguments:
+            $endpoint: %env(JENKINS_ENDPOINT)%
+            $username: %env(JENKINS_USERNAME)%
+            $password: %env(JENKINS_PASSWORD)%
+
+    App\Rest\Jira:
+        arguments:
+            $endpoint: %env(JIRA_ENDPOINT)%
+            $username: %env(JIRA_USERNAME)%
+            $password: %env(JIRA_PASSWORD)%
+
+    App\Rest\Watson:
+        class: App\Rest\Watson
+        arguments:
+            $endpoint: %conversation_endpoint%
+            $username: %env(CONVERSATION_USERNAME)%
+            $password: %env(CONVERSATION_PASSWORD)%
+#            $logger:   '@logger'
+
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    client.jenkins:
+        class: App\Rest\Jenkins
+        arguments:
+            $endpoint: %jenkins_endpoint%
+            $username: %env(JENKINS_USERNAME)%
+            $password: %env(JENKINS_PASSWORD)%
+#            1_ready_for_QA/build?token=%env(JENKINS_TOKEN)%
+
+    executor.job:
+        class: App\Service\Execute
+        arguments:
+            $serializer: '@jms_serializer'
+            $restClient: '@client.jenkins'
+            $logger:       '@logger'
+        tags:
+            - { name: monolog.logger, channel: executor }
+
+    client.jira:
+        class: App\Rest\Jira
+        arguments:
+            $endpoint: %env(JIRA_ENDPOINT)%
+            $username: %env(JIRA_USERNAME)%
+            $password: %env(JIRA_PASSWORD)%
+            $logger:   '@logger'
+        tags:
+            - { name: monolog.logger, channel: rest_jira }
+
+    repository.jira:
+        class: App\Repository\Jira
+        arguments:
+            $serializer: '@jms_serializer'
+            $restClient: '@client.jira'
+
+    executor.task_tracking:
+        class: App\Service\TaskTracking
+        arguments:
+            $repository: '@repository.jira'
+
+    app.exception_listener:
+        class: App\Listener\Exception
+        arguments:
+            $logger: '@logger'
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+            - { name: monolog.logger, channel: app_exception }

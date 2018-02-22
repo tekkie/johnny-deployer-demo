@@ -1,0 +1,20 @@
+.DS_Store
+dev/
+jira/volumes*
+jira/logs
+
+jenkins/volumes/copy_reference_file.log
+jenkins/volumes/logs/tasks/*
+jenkins/volumes/.java/
+
+# IDE settings
+.idea/
+
+# dependencies
+brains/vendor/
+brains/vendor-bkp/
+brains/.env
+brains/var/log/*.log
+
+bot/.env
+bot/node_modules/

@@ -1,0 +1,11 @@
+index:
+    path: /
+    defaults: { _controller: 'App\Controller\ConversationalController::index' }
+all_but_demo:
+    path: /demo
+    defaults: { _controller: 'App\Controller\DemoController::demo' }
+
+# first, run composer req annotations
+#controllers:
+#    resource: ../src/Controller/
+#    type: annotation

@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "access_token": "xoxp-5114068137-5114068149-260322045874-ea4bb1eef8ed8bc7cd3001ca72166015",
+  "scope": "identify,bot",
+  "user_id": "U6W97RJ66",
+  "team_name": "Johnny the Deployer",
+  "team_id": "T053C2041",
+  "bot": {
+    "bot_user_id": "U7P62S06S",
+    "bot_access_token": "xoxb-261206884230-ky2qub65LD8LlHJr1m3msBOv"
+  }
+}
